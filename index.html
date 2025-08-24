@@ -1,240 +1,168 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SwordEx</title>
-<link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles.css">
-<meta name="theme-color" content="#0b1220">
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SwordEX - Firebase Auth</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0b1220, #1a2740);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #111827;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      width: 340px;
+      text-align: center;
+    }
+    .card h2 { margin-bottom: 15px; }
+    input, textarea {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+    }
+    button {
+      padding: 10px 15px;
+      margin: 8px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn-main { background: #3b82f6; color: #fff; }
+    .btn-ghost { background: transparent; border: 2px solid #3b82f6; color: #3b82f6; }
+    #msg, #pMsg { margin-top: 10px; font-size: 14px; }
+    #profile { display: none; text-align:left; }
+    label { font-size: 14px; color: #94a3b8; display:block; margin-top:5px; }
+  </style>
 </head>
 <body>
-<header class="header">
-  <div class="brand">
-    <div class="logo">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="#3b82f6"><path d="M4 21l9-9 7-10 1 1-10 7-9 9 2 2z"/></svg>
-    </div>
-    <div>
-      <div class="name">SwordEx</div>
-      <div class="sub">BY XNIKKI69</div>
-    </div>
+  <!-- Auth Box -->
+  <div class="card" id="authBox">
+    <h2>⚔️ SwordEX Login</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <br>
+    <button class="btn-main" onclick="login()">Login</button>
+    <button class="btn-ghost" onclick="signup()">Signup</button>
+    <button class="btn-ghost" onclick="guest()">Guest</button>
+    <div id="msg"></div>
   </div>
-  <div id="userTop" class="sub">Not signed in</div>
-</header>
 
-<main class="container">
-  <section id="screen-auth" class="card">
-    <h2>Welcome back ⚔️</h2>
-    <p class="sub">Login or create an account to continue.</p>
-    <div class="grid2">
-      <input id="email" type="email" placeholder="Email">
-      <input id="password" type="password" placeholder="Password">
-    </div>
-    <div class="row" style="margin-top:10px">
-      <button id="btnLogin" class="btn">Login</button>
-      <button id="btnSignup" class="btn ghost">Create account</button>
-      <button id="btnAnon" class="btn ghost">Continue as guest</button>
-    </div>
-    <div id="authMsg" class="sub" style="margin-top:8px"></div>
-  </section>
+  <!-- Profile Box -->
+  <div class="card" id="profile">
+    <h2>Welcome!</h2>
+    <p><strong>Email:</strong> <span id="userEmail"></span></p>
+    <label for="displayName">Display Name</label>
+    <input type="text" id="displayName" placeholder="Your Name">
+    <label for="bio">Bio</label>
+    <textarea id="bio" rows="3" placeholder="Write something..."></textarea>
+    <button class="btn-main" onclick="saveProfile()">Save Profile</button>
+    <button class="btn-ghost" onclick="logout()">Logout</button>
+    <div id="pMsg"></div>
+  </div>
 
-  <section id="screen-feed" class="hidden">
-    <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:8px">
-      <h2>Feed</h2>
-      <button id="btnNewPost" class="btn">New Post</button>
-    </div>
-    <div id="feed"></div>
-  </section>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
-  <section id="screen-reels" class="hidden">
-    <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:8px">
-      <h2>Reels</h2>
-      <button id="btnNewReel" class="btn">Add Reel</button>
-    </div>
-    <div id="reels"></div>
-  </section>
+  <script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBoco0HmEDwL8ffXt5UJgWJgDyz2KghcFU",
+      authDomain: "swordex-login.firebaseapp.com",
+      projectId: "swordex-login",
+      storageBucket: "swordex-login.firebasestorage.app",
+      messagingSenderId: "633212760179",
+      appId: "1:633212760179:web:ba64d2b8812ab5c134ba06"
+    };
 
-  <section id="screen-videos" class="hidden">
-    <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:8px">
-      <h2>Videos</h2>
-      <button id="btnNewVid" class="btn">Add Video</button>
-    </div>
-    <div id="videos"></div>
-  </section>
+    // Init Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
 
-  <section id="screen-chats" class="hidden">
-    <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:8px">
-      <h2>Chats</h2>
-      <button id="btnNewGC" class="btn">New Group</button>
-    </div>
-    <div id="gcList" class="card"></div>
-    <div id="chatBox" class="card" style="max-height:45vh;overflow:auto"></div>
-    <div class="row card">
-      <input id="chatText" placeholder="Type a message">
-      <button id="chatSend" class="btn">Send</button>
-    </div>
-  </section>
+    const msg = (t,c="white")=>{
+      document.getElementById("msg").textContent=t;
+      document.getElementById("msg").style.color=c;
+    }
 
-  <section id="screen-profile" class="hidden">
-    <div class="card">
-      <h2>Profile</h2>
-      <div class="row">
-        <div class="avatar"></div>
-        <div>
-          <div id="pEmail" class="sub">–</div>
-          <div id="pUid" class="sub">–</div>
-        </div>
-      </div>
-      <hr class="sep">
-      <input id="pName" placeholder="Display name">
-      <textarea id="pBio" placeholder="Bio"></textarea>
-      <div class="row" style="margin-top:10px">
-        <button id="btnSaveProfile" class="btn">Save</button>
-        <button id="btnLogout" class="btn" style="background:#ef4444;color:white">Logout</button>
-      </div>
-      <div id="pMsg" class="sub" style="margin-top:8px"></div>
-    </div>
-    <div class="card center sub">Made with ⚔️ SwordEx • BY XNIKKI69</div>
-  </section>
-</main>
+    function signup(){
+      const e=document.getElementById("email").value;
+      const p=document.getElementById("password").value;
+      auth.createUserWithEmailAndPassword(e,p)
+      .then(u=>msg("Signup success ✅","#3b82f6"))
+      .catch(err=>msg(err.message,"#ef4444"));
+    }
 
-<nav class="bottom-nav">
-  <div class="navbtn" data-tab="feed"><span>🏠</span><span>Feed</span></div>
-  <div class="navbtn" data-tab="reels"><span>🎞️</span><span>Reels</span></div>
-  <div class="navbtn" data-tab="videos"><span>📺</span><span>Videos</span></div>
-  <div class="navbtn" data-tab="chats"><span>💬</span><span>Chats</span></div>
-  <div class="navbtn" data-tab="profile"><span>👤</span><span>Profile</span></div>
-</nav>
+    function login(){
+      const e=document.getElementById("email").value;
+      const p=document.getElementById("password").value;
+      auth.signInWithEmailAndPassword(e,p)
+      .then(u=>{
+        msg("Login success ✅","#3b82f6");
+        showProfile(u.user);
+      })
+      .catch(err=>msg(err.message,"#ef4444"));
+    }
 
-<script>
-const firebaseConfig = {{
-  apiKey: "AIzaSyCAnFn6pceOx73rtRFhDRJQQGL9jsqQCGo",
-  authDomain: "swordex-68229.firebaseapp.com",
-  databaseURL: "https://swordex-68229.firebaseio.com",
-  projectId: "swordex-68229",
-  storageBucket: "swordex-68229.appspot.com",
-  messagingSenderId: "185895483931",
-  appId: "1:185895483931:android:69a4a059a1fc7d0cd256be"
-}};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.database();
+    function guest(){
+      auth.signInAnonymously()
+      .then(u=>{
+        msg("Guest login ✅","#3b82f6");
+        showProfile(u.user);
+      })
+      .catch(err=>msg(err.message,"#ef4444"));
+    }
 
-const qs = s=>document.querySelector(s);
-const show = id => document.querySelectorAll('main > section').forEach(sec=>sec.id===id?sec.classList.remove('hidden'):sec.classList.add('hidden'));
-const setActive = tab => document.querySelectorAll('.navbtn').forEach(el=>el.classList.toggle('active', el.dataset.tab===tab));
+    function logout(){
+      auth.signOut().then(()=>{
+        document.getElementById("profile").style.display="none";
+        document.getElementById("authBox").style.display="block";
+        msg("Logged out","#ef4444");
+      });
+    }
 
-document.querySelectorAll('.navbtn').forEach(el=>el.addEventListener('click',()=>{{ 
-  const t=el.dataset.tab; 
-  if(!auth.currentUser) return alert('Login first');
-  show('screen-'+t); setActive(t);
-}}));
+    function showProfile(user){
+      document.getElementById("authBox").style.display="none";
+      document.getElementById("profile").style.display="block";
+      document.getElementById("userEmail").textContent = user.email || "Guest User";
 
-qs('#btnLogin').onclick = ()=>{{ const e=qs('#email').value.trim(), p=qs('#password').value.trim(); if(!e||!p) return msg('auth','Enter email & password'); auth.signInWithEmailAndPassword(e,p).catch(err=>msg('auth',err.message,true)); }};
-qs('#btnSignup').onclick = ()=>{{ const e=qs('#email').value.trim(), p=qs('#password').value.trim(); if(!e||!p) return msg('auth','Enter email & password'); auth.createUserWithEmailAndPassword(e,p).catch(err=>msg('auth',err.message,true)); }};
-qs('#btnAnon').onclick = ()=>auth.signInAnonymously().catch(err=>msg('auth',err.message,true));
+      // Load profile data from DB
+      db.ref("users/"+user.uid).get().then(s=>{
+        const v=s.val()||{};
+        document.getElementById("displayName").value = v.name||"";
+        document.getElementById("bio").value = v.bio||"";
+      });
+    }
 
-function msg(where, text, isErr){{
-  const el = where==='auth'? qs('#authMsg'): where==='profile'? qs('#pMsg'): qs('#authMsg');
-  el.textContent = text; el.style.color = isErr? '#ef4444':'#94a3b8';
-}}
+    function saveProfile(){
+      const u=auth.currentUser;
+      if(!u) return;
+      const data = {
+        name: document.getElementById("displayName").value.trim(),
+        bio: document.getElementById("bio").value.trim()
+      };
+      db.ref("users/"+u.uid).set(data)
+        .then(()=>{ document.getElementById("pMsg").textContent="Profile saved ✅"; })
+        .catch(err=>{ document.getElementById("pMsg").textContent=err.message; });
+    }
 
-auth.onAuthStateChanged(user=>{{
-  if(user){{
-    qs('#userTop').textContent = user.email || 'Guest';
-    qs('#pEmail').textContent = user.email || 'Guest';
-    qs('#pUid').textContent = user.uid;
-    db.ref('users/'+user.uid).get().then(s=>{{ const v=s.val()||{{}}; qs('#pName').value=v.name||''; qs('#pBio').value=v.bio||''; }});
-    qs('#screen-auth').classList.add('hidden');
-    show('screen-feed'); setActive('feed');
-    startListeners();
-  }} else {{
-    qs('#userTop').textContent = 'Not signed in';
-    show('screen-auth'); setActive('');
-  }}
-}});
-
-function renderFeed(snap){{
-  const list = qs('#feed'); list.innerHTML='';
-  snap.forEach(ch=>{{
-    const p=ch.val();
-    const el=document.createElement('div'); el.className='card post';
-    el.innerHTML = `
-      <div class="head">
-        <div class="avatar"></div>
-        <div>
-          <div><strong>${{p.user||'Anon'}}</strong> <span class="badge">POST</span></div>
-          <div class="muted">${{new Date(p.time||Date.now()).toLocaleString()}}</div>
-        </div>
-      </div>
-      ${{ p.photo? `<img class='video' src='${{p.photo}}'/>` : p.video? `<video class='video' src='${{p.video}}' controls playsinline></video>` : '' }}
-      <div>${{p.caption||''}}</div>
-      <div class="row"><button class="btn ghost" onclick="likePost('${{ch.key}}', ${{p.likes||0}})">♥ Like (${{p.likes||0}})</button></div>
-    `;
-    list.appendChild(el);
-  }});
-}}
-function likePost(id,cur){{ db.ref('posts/'+id+'/likes').set((cur||0)+1); }}
-qs('#btnNewPost').onclick = ()=>{{ const cap=prompt('Caption?'); const url=prompt('Photo/Video URL (public, optional)'); const user = auth.currentUser && (auth.currentUser.email||'Guest'); const data={{ user, caption:cap||'', time:Date.now() }}; if(url){{ if(url.match(/\.mp4|\.webm|\.m3u8/)) data.video=url; else data.photo=url; }} db.ref('posts').push(data); }};
-
-function renderReels(snap){{
-  const list = qs('#reels'); list.innerHTML='';
-  snap.forEach(ch=>{{
-    const r=ch.val();
-    const el=document.createElement('div'); el.className='card';
-    el.innerHTML = `<video class="reel" src="${{r.url}}" controls playsinline loop></video><div class="muted" style="margin-top:6px">${{r.caption||''}}</div>`;
-    list.appendChild(el);
-  }});
-}}
-qs('#btnNewReel').onclick = ()=>{{ const url=prompt('Reel Video URL (.mp4 recommended)'); if(!url) return; const cap=prompt('Caption?'); const user=auth.currentUser&&(auth.currentUser.email||'Guest'); db.ref('reels').push({{user, url, caption:cap||'', time:Date.now()}}); }};
-
-function renderVids(snap){{
-  const list = qs('#videos'); list.innerHTML='';
-  snap.forEach(ch=>{{
-    const v=ch.val();
-    const el=document.createElement('div'); el.className='card';
-    el.innerHTML = `<video class="video" src="${{v.url}}" controls playsinline></video><div class="muted" style="margin-top:6px">${{v.title||''}}</div>`;
-    list.appendChild(el);
-  }});
-}}
-qs('#btnNewVid').onclick = ()=>{{ const url=prompt('Video URL (.mp4 or HLS)'); if(!url) return; const title=prompt('Title?'); const user=auth.currentUser&&(auth.currentUser.email||'Guest'); db.ref('videos').push({{user, url, title:title||'', time:Date.now()}}); }};
-
-let currentGC = null;
-function renderGCList(snap){{
-  const list = qs('#gcList'); list.innerHTML='';
-  snap.forEach(ch=>{{
-    const g=ch.val(); const id=ch.key;
-    const el=document.createElement('div'); el.className='row'; el.style.justifyContent='space-between'; el.style.marginBottom='8px';
-    el.innerHTML = `<div><strong>${{g.name}}</strong> <span class="muted">(${id.slice(-4)})</span></div><button class="btn ghost" onclick="openGC('${{id}}')">Open</button>`;
-    list.appendChild(el);
-  }});
-}}
-function openGC(id){{
-  currentGC=id; qs('#chatBox').innerHTML=''; db.ref('gcs/'+id+'/msgs').limitToLast(200).off();
-  db.ref('gcs/'+id+'/msgs').limitToLast(200).on('child_added', s=>{{
-    const m=s.val(); const me = auth.currentUser && auth.currentUser.uid===m.uid;
-    const d=document.createElement('div'); d.className='msg '+(me?'me':'other'); d.textContent=(m.user||'Anon')+': '+m.text; qs('#chatBox').appendChild(d); qs('#chatBox').scrollTop=qs('#chatBox').scrollHeight;
-  }});
-}}
-qs('#btnNewGC').onclick = ()=>{{ const name=prompt('Group name?'); if(!name) return; db.ref('gcs').push({{name, created:Date.now()}}); }};
-qs('#chatSend').onclick = ()=>{{ const t=qs('#chatText').value.trim(); if(!t||!currentGC) return; const u=auth.currentUser; db.ref('gcs/'+currentGC+'/msgs').push({{uid:u.uid, user:u.email||'Guest', text:t, time:Date.now()}}); qs('#chatText').value=''; }};
-
-qs('#btnSaveProfile').onclick = ()=>{{ const u=auth.currentUser; if(!u) return; db.ref('users/'+u.uid).set({{name:qs('#pName').value.trim(), bio:qs('#pBio').value.trim()}}).then(()=>msg('profile','Saved ✓')); }};
-qs('#btnLogout').onclick = ()=>auth.signOut();
-
-let inited=false;
-function startListeners(){{
-  if(inited) return; inited=true;
-  db.ref('posts').on('value', renderFeed);
-  db.ref('reels').on('value', renderReels);
-  db.ref('videos').on('value', renderVids);
-  db.ref('gcs').on('value', renderGCList);
-}}
-</script>
+    auth.onAuthStateChanged(u=>{
+      if(u){ showProfile(u); }
+    });
+  </script>
 </body>
 </html>
