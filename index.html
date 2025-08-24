@@ -1,168 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SwordEX - Firebase Auth</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SwordEX Login</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #0b1220, #1a2740);
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #141e30, #243b55);
       color: #fff;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
+      min-height: 100vh;
     }
-    .card {
-      background: #111827;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-      width: 340px;
+
+    header {
+      width: 100%;
+      padding: 15px;
       text-align: center;
+      font-size: 1.8em;
+      font-weight: bold;
+      background: rgba(0, 0, 0, 0.5);
+      letter-spacing: 2px;
     }
-    .card h2 { margin-bottom: 15px; }
-    input, textarea {
+
+    .container {
+      margin-top: 40px;
       width: 90%;
-      padding: 10px;
-      margin: 8px 0;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      text-align: center;
+      font-size: 1.4em;
+      color: #ffcc70;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
       border: none;
       border-radius: 8px;
       outline: none;
+      font-size: 1em;
     }
+
     button {
-      padding: 10px 15px;
-      margin: 8px;
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
       border: none;
       border-radius: 8px;
+      background: linear-gradient(45deg, #ff512f, #dd2476);
+      color: white;
+      font-size: 1.1em;
       cursor: pointer;
-      font-weight: bold;
+      transition: 0.3s;
     }
-    .btn-main { background: #3b82f6; color: #fff; }
-    .btn-ghost { background: transparent; border: 2px solid #3b82f6; color: #3b82f6; }
-    #msg, #pMsg { margin-top: 10px; font-size: 14px; }
-    #profile { display: none; text-align:left; }
-    label { font-size: 14px; color: #94a3b8; display:block; margin-top:5px; }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .profile {
+      text-align: center;
+    }
+
+    .feed {
+      margin-top: 20px;
+    }
+
+    .post {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 10px 0;
+    }
   </style>
 </head>
 <body>
-  <!-- Auth Box -->
-  <div class="card" id="authBox">
-    <h2>⚔️ SwordEX Login</h2>
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-    <br>
-    <button class="btn-main" onclick="login()">Login</button>
-    <button class="btn-ghost" onclick="signup()">Signup</button>
-    <button class="btn-ghost" onclick="guest()">Guest</button>
-    <div id="msg"></div>
+  <header>SwordEX 🔥</header>
+
+  <!-- Signup/Login Container -->
+  <div class="container" id="auth-container">
+    <h2>Signup</h2>
+    <input type="email" id="signup-email" placeholder="Email" />
+    <input type="password" id="signup-password" placeholder="Password" />
+    <button id="signup-btn">Signup</button>
+
+    <h2>Login</h2>
+    <input type="email" id="login-email" placeholder="Email" />
+    <input type="password" id="login-password" placeholder="Password" />
+    <button id="login-btn">Login</button>
   </div>
 
-  <!-- Profile Box -->
-  <div class="card" id="profile">
-    <h2>Welcome!</h2>
-    <p><strong>Email:</strong> <span id="userEmail"></span></p>
-    <label for="displayName">Display Name</label>
-    <input type="text" id="displayName" placeholder="Your Name">
-    <label for="bio">Bio</label>
-    <textarea id="bio" rows="3" placeholder="Write something..."></textarea>
-    <button class="btn-main" onclick="saveProfile()">Save Profile</button>
-    <button class="btn-ghost" onclick="logout()">Logout</button>
-    <div id="pMsg"></div>
+  <!-- Profile + Feed Container -->
+  <div class="container hidden" id="profile-container">
+    <div class="profile">
+      <h2>👤 Your Profile</h2>
+      <input type="text" id="profile-name" placeholder="Display Name" />
+      <input type="text" id="profile-bio" placeholder="Your Bio" />
+      <button id="save-profile">Save Profile</button>
+      <button id="logout-btn">Logout</button>
+    </div>
+
+    <div class="feed">
+      <h2>🔥 SwordEX Feed</h2>
+      <div class="post">⚡ Welcome to SwordEX! Post 1</div>
+      <div class="post">🚀 This is your cool feed! Post 2</div>
+      <div class="post">🔥 Keep building! Post 3</div>
+    </div>
   </div>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-  <script>
-    // Firebase Config
+    // ✅ Tera Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyBoco0HmEDwL8ffXt5UJgWJgDyz2KghcFU",
       authDomain: "swordex-login.firebaseapp.com",
       projectId: "swordex-login",
       storageBucket: "swordex-login.firebasestorage.app",
       messagingSenderId: "633212760179",
-      appId: "1:633212760179:web:ba64d2b8812ab5c134ba06"
+      appId: "1:633212760179:web:ba64d2b8812ab5c134ba06",
+      databaseURL: "https://swordex-login-default-rtdb.firebaseio.com/"
     };
 
-    // Init Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
+    // Init
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
 
-    const msg = (t,c="white")=>{
-      document.getElementById("msg").textContent=t;
-      document.getElementById("msg").style.color=c;
-    }
+    // Elements
+    const authContainer = document.getElementById("auth-container");
+    const profileContainer = document.getElementById("profile-container");
 
-    function signup(){
-      const e=document.getElementById("email").value;
-      const p=document.getElementById("password").value;
-      auth.createUserWithEmailAndPassword(e,p)
-      .then(u=>msg("Signup success ✅","#3b82f6"))
-      .catch(err=>msg(err.message,"#ef4444"));
-    }
+    const signupBtn = document.getElementById("signup-btn");
+    const loginBtn = document.getElementById("login-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+    const saveProfileBtn = document.getElementById("save-profile");
 
-    function login(){
-      const e=document.getElementById("email").value;
-      const p=document.getElementById("password").value;
-      auth.signInWithEmailAndPassword(e,p)
-      .then(u=>{
-        msg("Login success ✅","#3b82f6");
-        showProfile(u.user);
-      })
-      .catch(err=>msg(err.message,"#ef4444"));
-    }
+    // Signup
+    signupBtn.addEventListener("click", () => {
+      const email = document.getElementById("signup-email").value;
+      const password = document.getElementById("signup-password").value;
 
-    function guest(){
-      auth.signInAnonymously()
-      .then(u=>{
-        msg("Guest login ✅","#3b82f6");
-        showProfile(u.user);
-      })
-      .catch(err=>msg(err.message,"#ef4444"));
-    }
-
-    function logout(){
-      auth.signOut().then(()=>{
-        document.getElementById("profile").style.display="none";
-        document.getElementById("authBox").style.display="block";
-        msg("Logged out","#ef4444");
-      });
-    }
-
-    function showProfile(user){
-      document.getElementById("authBox").style.display="none";
-      document.getElementById("profile").style.display="block";
-      document.getElementById("userEmail").textContent = user.email || "Guest User";
-
-      // Load profile data from DB
-      db.ref("users/"+user.uid).get().then(s=>{
-        const v=s.val()||{};
-        document.getElementById("displayName").value = v.name||"";
-        document.getElementById("bio").value = v.bio||"";
-      });
-    }
-
-    function saveProfile(){
-      const u=auth.currentUser;
-      if(!u) return;
-      const data = {
-        name: document.getElementById("displayName").value.trim(),
-        bio: document.getElementById("bio").value.trim()
-      };
-      db.ref("users/"+u.uid).set(data)
-        .then(()=>{ document.getElementById("pMsg").textContent="Profile saved ✅"; })
-        .catch(err=>{ document.getElementById("pMsg").textContent=err.message; });
-    }
-
-    auth.onAuthStateChanged(u=>{
-      if(u){ showProfile(u); }
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("Signup successful ✅");
+          authContainer.classList.add("hidden");
+          profileContainer.classList.remove("hidden");
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
     });
+
+    // Login
+    loginBtn.addEventListener("click", () => {
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("Login successful ✅");
+          loadProfile(userCredential.user.uid);
+          authContainer.classList.add("hidden");
+          profileContainer.classList.remove("hidden");
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    });
+
+    // Logout
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth).then(() => {
+        authContainer.classList.remove("hidden");
+        profileContainer.classList.add("hidden");
+      });
+    });
+
+    // Save Profile
+    saveProfileBtn.addEventListener("click", () => {
+      const user = auth.currentUser;
+      const name = document.getElementById("profile-name").value;
+      const bio = document.getElementById("profile-bio").value;
+
+      if (user) {
+        set(ref(db, "users/" + user.uid), {
+          name: name,
+          bio: bio
+        }).then(() => {
+          alert("Profile saved ✅");
+        });
+      }
+    });
+
+    // Load Profile
+    function loadProfile(uid) {
+      const dbRef = ref(db);
+      get(child(dbRef, "users/" + uid)).then((snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          document.getElementById("profile-name").value = data.name || "";
+          document.getElementById("profile-bio").value = data.bio || "";
+        }
+      });
+    }
   </script>
 </body>
 </html>
