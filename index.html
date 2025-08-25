@@ -4,14 +4,185 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nova Social</title>
-  <script type="module">
-    // Import Firebase SDKs
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fafafa;
+    }
+    header {
+      background: #fff;
+      border-bottom: 1px solid #dbdbdb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 {
+      font-size: 22px;
+      margin: 0;
+      color: #262626;
+    }
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #262626;
+      font-size: 14px;
+    }
+    .container {
+      display: flex;
+      max-width: 1000px;
+      margin: 20px auto;
+    }
+    .sidebar {
+      width: 220px;
+      background: #fff;
+      border: 1px solid #dbdbdb;
+      border-radius: 6px;
+      padding: 15px;
+      height: fit-content;
+    }
+    .feed {
+      flex: 1;
+      margin-left: 20px;
+    }
+    .story-bar {
+      display: flex;
+      overflow-x: auto;
+      background: #fff;
+      border: 1px solid #dbdbdb;
+      border-radius: 6px;
+      padding: 10px;
+    }
+    .story {
+      width: 60px;
+      margin-right: 10px;
+      text-align: center;
+      font-size: 12px;
+    }
+    .story img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid #e1306c;
+    }
+    .post {
+      background: #fff;
+      border: 1px solid #dbdbdb;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
+    .post img {
+      width: 100%;
+      border-bottom: 1px solid #dbdbdb;
+    }
+    .post .content {
+      padding: 10px;
+    }
+    .chat-box {
+      background: #fff;
+      border: 1px solid #dbdbdb;
+      border-radius: 6px;
+      margin-top: 20px;
+      height: 300px;
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+    }
+    .chat-input {
+      display: flex;
+      border-top: 1px solid #dbdbdb;
+    }
+    .chat-input input {
+      flex: 1;
+      border: none;
+      padding: 10px;
+      outline: none;
+    }
+    .chat-input button {
+      border: none;
+      background: #3897f0;
+      color: #fff;
+      padding: 0 15px;
+      cursor: pointer;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Nova Social</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Explore</a>
+      <a href="#">Reels</a>
+      <a href="#">Messages</a>
+      <a href="#">Profile</a>
+    </nav>
+  </header>
 
-    // ✅ Your Firebase Config
+  <div class="container">
+    <div class="sidebar">
+      <h3>Suggestions</h3>
+      <p>@john_doe</p>
+      <p>@alice</p>
+      <p>@sammy</p>
+    </div>
+
+    <div class="feed">
+      <div class="story-bar">
+        <div class="story"><img src="https://via.placeholder.com/60" /><p>You</p></div>
+        <div class="story"><img src="https://via.placeholder.com/60" /><p>John</p></div>
+        <div class="story"><img src="https://via.placeholder.com/60" /><p>Alice</p></div>
+      </div>
+
+      <div class="post">
+        <img src="https://via.placeholder.com/800x400" />
+        <div class="content">
+          <strong>@john_doe</strong>
+          <p>Enjoying the sunset 🌅</p>
+        </div>
+      </div>
+
+      <div class="post">
+        <img src="https://via.placeholder.com/800x400" />
+        <div class="content">
+          <strong>@alice</strong>
+          <p>My new painting 🎨</p>
+        </div>
+      </div>
+
+      <div class="chat-box">
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input">
+          <input type="text" id="chatInput" placeholder="Type a message..." />
+          <button onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 Nova Social. All rights reserved.</p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    // Your Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyBoco0HmEDwL8ffXt5UJgWJgDyz2KghcFU",
       authDomain: "swordex-login.firebaseapp.com",
@@ -24,86 +195,31 @@
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-    const db = getFirestore(app);
-    const storage = getStorage(app);
+    const db = getDatabase(app);
 
-    // Example: Google Login
-    async function login() {
-      try {
-        await signInWithPopup(auth, provider);
-      } catch (err) {
-        console.error(err);
-      }
-    }
+    const chatMessages = document.getElementById("chatMessages");
+    const chatInput = document.getElementById("chatInput");
 
-    // Example: Logout
-    function logout() {
-      signOut(auth);
-    }
-
-    // Realtime Auth Listener
-    onAuthStateChanged(auth, (user) => {
-      const status = document.getElementById("status");
-      if (user) {
-        status.innerText = `Welcome ${user.displayName}`;
-      } else {
-        status.innerText = "Not logged in";
-      }
-    });
-
-    // Example: Create Post
-    async function createPost() {
-      const postInput = document.getElementById("postInput");
-      if (postInput.value.trim() !== "") {
-        await addDoc(collection(db, "posts"), {
-          text: postInput.value,
-          createdAt: serverTimestamp()
+    function sendMessage() {
+      const text = chatInput.value.trim();
+      if (text) {
+        push(ref(db, "messages"), {
+          text,
+          timestamp: Date.now()
         });
-        postInput.value = "";
+        chatInput.value = "";
       }
     }
 
-    // Realtime Feed
-    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-    onSnapshot(q, (snapshot) => {
-      const feed = document.getElementById("feed");
-      feed.innerHTML = "";
-      snapshot.forEach((doc) => {
-        const div = document.createElement("div");
-        div.textContent = doc.data().text;
-        feed.appendChild(div);
-      });
+    onChildAdded(ref(db, "messages"), (snapshot) => {
+      const msg = snapshot.val();
+      const div = document.createElement("div");
+      div.textContent = msg.text;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     });
 
-    window.login = login;
-    window.logout = logout;
-    window.createPost = createPost;
+    window.sendMessage = sendMessage;
   </script>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
-    header { background: #333; color: #fff; padding: 1rem; text-align: center; }
-    main { padding: 1rem; }
-    #feed div { background: white; margin: 0.5rem 0; padding: 1rem; border-radius: 8px; }
-    button { margin: 0.5rem; padding: 0.5rem 1rem; border: none; border-radius: 5px; cursor: pointer; }
-    .btn-primary { background: #007bff; color: white; }
-    .btn-danger { background: #dc3545; color: white; }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Nova Social</h1>
-    <p id="status">Not logged in</p>
-    <button class="btn-primary" onclick="login()">Login with Google</button>
-    <button class="btn-danger" onclick="logout()">Logout</button>
-  </header>
-  <main>
-    <h2>Create Post</h2>
-    <input id="postInput" type="text" placeholder="What's on your mind?" />
-    <button class="btn-primary" onclick="createPost()">Post</button>
-    <h2>Feed</h2>
-    <div id="feed"></div>
-  </main>
 </body>
 </html>
