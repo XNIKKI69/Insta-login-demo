@@ -1,188 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nova Social</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nova Social — Full Build</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #fafafa;
-    }
-    header {
-      background: #fff;
-      border-bottom: 1px solid #dbdbdb;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 20px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    header h1 {
-      font-size: 22px;
-      margin: 0;
-      color: #262626;
-    }
-    nav a {
-      margin-left: 20px;
-      text-decoration: none;
-      color: #262626;
-      font-size: 14px;
-    }
-    .container {
-      display: flex;
-      max-width: 1000px;
-      margin: 20px auto;
-    }
-    .sidebar {
-      width: 220px;
-      background: #fff;
-      border: 1px solid #dbdbdb;
-      border-radius: 6px;
-      padding: 15px;
-      height: fit-content;
-    }
-    .feed {
-      flex: 1;
-      margin-left: 20px;
-    }
-    .story-bar {
-      display: flex;
-      overflow-x: auto;
-      background: #fff;
-      border: 1px solid #dbdbdb;
-      border-radius: 6px;
-      padding: 10px;
-    }
-    .story {
-      width: 60px;
-      margin-right: 10px;
-      text-align: center;
-      font-size: 12px;
-    }
-    .story img {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: 2px solid #e1306c;
-    }
-    .post {
-      background: #fff;
-      border: 1px solid #dbdbdb;
-      border-radius: 6px;
-      margin-top: 20px;
-    }
-    .post img {
-      width: 100%;
-      border-bottom: 1px solid #dbdbdb;
-    }
-    .post .content {
-      padding: 10px;
-    }
-    .chat-box {
-      background: #fff;
-      border: 1px solid #dbdbdb;
-      border-radius: 6px;
-      margin-top: 20px;
-      height: 300px;
-      display: flex;
-      flex-direction: column;
-    }
-    .chat-messages {
-      flex: 1;
-      padding: 10px;
-      overflow-y: auto;
-    }
-    .chat-input {
-      display: flex;
-      border-top: 1px solid #dbdbdb;
-    }
-    .chat-input input {
-      flex: 1;
-      border: none;
-      padding: 10px;
-      outline: none;
-    }
-    .chat-input button {
-      border: none;
-      background: #3897f0;
-      color: #fff;
-      padding: 0 15px;
-      cursor: pointer;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 12px;
-      color: #999;
-    }
+    :root{--bg:#0b0e13;--card:#0f1720;--muted:#9fb0c8;--text:#e8eef7;--brand:#4b8bff;--accent:#7a5cff;--glass:rgba(255,255,255,.03);--radius:14px}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,#071025,#0b1220);color:var(--text);-webkit-font-smoothing:antialiased}
+    a{color:inherit}
+    .container{max-width:1100px;margin:18px auto;padding:12px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px}
+    .brand{font-weight:800;font-size:20px}
+    .row{display:flex;gap:12px;align-items:center}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,.06);padding:8px 12px;border-radius:10px;cursor:pointer;color:var(--text)}
+    .btn.primary{background:linear-gradient(135deg,var(--brand),var(--accent));border:none}
+    .layout{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:980px){.layout{grid-template-columns:1.2fr .75fr}}
+    .glass{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.04);border-radius:var(--radius);padding:12px}
+    .stories{display:flex;gap:10px;overflow:auto;padding:8px}
+    .story{width:64px;text-align:center}
+    .story img{width:64px;height:64px;border-radius:50%;border:3px solid #ef6ea6;object-fit:cover}
+    .post{margin-top:12px;background:linear-gradient(180deg,#071026,#071224);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.03)}
+    .post header{display:flex;gap:10px;align-items:center;padding:10px}
+    .avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,.06)}
+    .post .media{width:100%;max-height:520px;object-fit:cover;background:#000}
+    .post .body{padding:10px}
+    .muted{color:var(--muted)}
+    .small{font-size:13px}
+    .right{margin-left:auto}
+    .sidebar .card-item{padding:10px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,.01),transparent);border:1px solid rgba(255,255,255,.02);margin-bottom:12px}
+    .chat-box{display:flex;flex-direction:column;height:340px}
+    .messages{flex:1;overflow:auto;padding:8px}
+    .message{padding:8px;border-radius:10px;margin-bottom:8px;background:rgba(255,255,255,.02);max-width:80%}
+    .message.me{background:linear-gradient(90deg, rgba(75,139,255,.18), rgba(122,92,255,.12));margin-left:auto}
+    input[type='file']{color:transparent}
+    footer{opacity:.7;text-align:center;margin-top:18px;font-size:13px}
+    .hide{display:none !important}
+    label.input{display:block}
+    .flex-col{display:flex;flex-direction:column;gap:8px}
+    .chip{padding:6px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.06);font-size:12px}
   </style>
 </head>
 <body>
-  <header>
-    <h1>Nova Social</h1>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Explore</a>
-      <a href="#">Reels</a>
-      <a href="#">Messages</a>
-      <a href="#">Profile</a>
-    </nav>
-  </header>
-
   <div class="container">
-    <div class="sidebar">
-      <h3>Suggestions</h3>
-      <p>@john_doe</p>
-      <p>@alice</p>
-      <p>@sammy</p>
-    </div>
-
-    <div class="feed">
-      <div class="story-bar">
-        <div class="story"><img src="https://via.placeholder.com/60" /><p>You</p></div>
-        <div class="story"><img src="https://via.placeholder.com/60" /><p>John</p></div>
-        <div class="story"><img src="https://via.placeholder.com/60" /><p>Alice</p></div>
-      </div>
-
-      <div class="post">
-        <img src="https://via.placeholder.com/800x400" />
-        <div class="content">
-          <strong>@john_doe</strong>
-          <p>Enjoying the sunset 🌅</p>
+    <div class="topbar glass">
+      <div class="brand">✨ Nova Social</div>
+      <div class="row">
+        <button class="btn" id="navHome">Home</button>
+        <button class="btn" id="navReels">Reels</button>
+        <button class="btn" id="navMessages">Messages</button>
+        <div id="authControls" class="row">
+          <button class="btn" id="btnGoogle">Sign in (Google)</button>
+          <button class="btn" id="btnShowEmail">Email</button>
         </div>
-      </div>
-
-      <div class="post">
-        <img src="https://via.placeholder.com/800x400" />
-        <div class="content">
-          <strong>@alice</strong>
-          <p>My new painting 🎨</p>
-        </div>
-      </div>
-
-      <div class="chat-box">
-        <div class="chat-messages" id="chatMessages"></div>
-        <div class="chat-input">
-          <input type="text" id="chatInput" placeholder="Type a message..." />
-          <button onclick="sendMessage()">Send</button>
+        <div id="userMenu" class="row hide">
+          <img id="userAvatar" class="avatar" src="" alt="user"/>
+          <div id="userName" class="small muted"></div>
+          <button class="btn" id="btnLogout">Logout</button>
         </div>
       </div>
     </div>
+
+    <div class="layout">
+      <main>
+        <div class="glass">
+          <div class="flex-col">
+            <div class="row between">
+              <div>
+                <div class="section-title" style="font-weight:700;font-size:18px">Create post</div>
+                <div class="muted small">Upload image/video or post text</div>
+              </div>
+              <div id="signedNotice" class="chip muted">Not signed in</div>
+            </div>
+
+            <div style="margin-top:10px" class="flex-col">
+              <input id="postText" class="inputField" placeholder="What's happening?" style="padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.04);background:transparent;color:var(--text)" />
+              <div class="row" style="align-items:center">
+                <input id="postFile" type="file" accept="image/*,video/*" />
+                <select id="postType" style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,.04);color:var(--text)">
+                  <option value="auto">Auto (image/video/text)</option>
+                  <option value="image">Image</option>
+                  <option value="video">Video</option>
+                  <option value="text">Text only</option>
+                </select>
+                <button class="btn primary" id="btnPublish">Publish</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="feed" class="glass" style="margin-top:12px">
+          <div class="stories" id="storiesBar"></div>
+          <div id="postsArea"></div>
+        </div>
+
+      </main>
+
+      <aside class="sidebar">
+        <div class="card-item glass">
+          <div style="display:flex;gap:10px;align-items:center">
+            <img id="sideAvatar" class="avatar" src="https://ui-avatars.com/api/?name=Guest&background=0D1220&color=E8EEF7" />
+            <div>
+              <div id="sideName" style="font-weight:700">Guest</div>
+              <div id="sideEmail" class="muted small">Not signed in</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-item glass">
+          <div style="font-weight:700;margin-bottom:6px">Groups Chat</div>
+          <div id="groupsList"></div>
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <input id="newGroupName" placeholder="New group name" style="flex:1;padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,.03)" />
+            <button class="btn" id="btnCreateGroup">Create</button>
+          </div>
+        </div>
+
+        <div class="card-item glass">
+          <div style="font-weight:700;margin-bottom:6px">Chat</div>
+          <div class="chat-box">
+            <div id="chatMessages" class="messages"></div>
+            <div style="display:flex;gap:8px;border-top:1px solid rgba(255,255,255,.02);padding-top:8px;margin-top:8px">
+              <input id="chatInput" placeholder="Type a message..." style="flex:1;padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,.03)" />
+              <button class="btn primary" id="btnSendChat">Send</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-item glass">
+          <div style="font-weight:700;margin-bottom:6px">Reels</div>
+          <div id="reelsList" style="display:grid;grid-template-columns:1fr;gap:8px"></div>
+          <div style="margin-top:8px;">
+            <input id="reelFile" type="file" accept="video/*" />
+            <button class="btn" id="btnUploadReel">Upload Reel</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>Made with ❤️ — Single file full integration. Deploy on GitHub Pages + Firebase.</footer>
   </div>
 
-  <footer>
-    <p>© 2025 Nova Social. All rights reserved.</p>
-  </footer>
-
+  <!-- FULL Firebase + App logic -->
   <script type="module">
+    // Firebase SDKs
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, doc, addDoc, onSnapshot, query, orderBy, where, serverTimestamp, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    // Your Firebase config
+    // ==== YOUR FIREBASE CONFIG (already provided by you) ====
     const firebaseConfig = {
       apiKey: "AIzaSyBoco0HmEDwL8ffXt5UJgWJgDyz2KghcFU",
       authDomain: "swordex-login.firebaseapp.com",
@@ -193,33 +163,240 @@
       appId: "1:633212760179:web:ba64d2b8812ab5c134ba06"
     };
 
-    // Initialize Firebase
+    // Init
     const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    const db = getFirestore(app);
+    const storage = getStorage(app);
 
-    const chatMessages = document.getElementById("chatMessages");
-    const chatInput = document.getElementById("chatInput");
+    // UI Refs
+    const btnGoogle = document.getElementById('btnGoogle');
+    const btnShowEmail = document.getElementById('btnShowEmail');
+    const authControls = document.getElementById('authControls');
+    const userMenu = document.getElementById('userMenu');
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
+    const signedNotice = document.getElementById('signedNotice');
 
-    function sendMessage() {
-      const text = chatInput.value.trim();
-      if (text) {
-        push(ref(db, "messages"), {
-          text,
-          timestamp: Date.now()
-        });
-        chatInput.value = "";
-      }
+    const postText = document.getElementById('postText');
+    const postFile = document.getElementById('postFile');
+    const postType = document.getElementById('postType');
+    const btnPublish = document.getElementById('btnPublish');
+    const postsArea = document.getElementById('postsArea');
+    const storiesBar = document.getElementById('storiesBar');
+
+    const sideAvatar = document.getElementById('sideAvatar');
+    const sideName = document.getElementById('sideName');
+    const sideEmail = document.getElementById('sideEmail');
+
+    const groupsList = document.getElementById('groupsList');
+    const newGroupName = document.getElementById('newGroupName');
+    const btnCreateGroup = document.getElementById('btnCreateGroup');
+
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const btnSendChat = document.getElementById('btnSendChat');
+
+    const reelsList = document.getElementById('reelsList');
+    const reelFile = document.getElementById('reelFile');
+    const btnUploadReel = document.getElementById('btnUploadReel');
+
+    // Helper
+    const $ = (s) => document.querySelector(s);
+    const uid = () => auth.currentUser?.uid || null;
+
+    function showToast(msg){ signedNotice.textContent = msg; }
+
+    // ===== Auth actions =====
+    btnGoogle.onclick = async ()=>{
+      try{ await signInWithPopup(auth, provider); showToast('Signed in'); }
+      catch(e){ console.error(e); showToast('Google sign-in failed'); }
+    };
+
+    btnShowEmail.onclick = ()=>{
+      const email = prompt('Email'); if(!email) return; const pass = prompt('Password (will create account if not exists)'); if(!pass) return;
+      // Try login, else create
+      signInWithEmailAndPassword(auth,email,pass).catch(async (err)=>{
+        try{ const res = await createUserWithEmailAndPassword(auth,email,pass); showToast('Account created'); }
+        catch(e){ alert(e.message); }
+      });
+    };
+
+    document.getElementById('btnLogout').onclick = ()=> signOut(auth);
+
+    // ===== Firestore listeners: feed, stories, groups, reels, chat =====
+    let postsUnsub=null, groupsUnsub=null, reelsUnsub=null, chatUnsub=null;
+
+    function renderPost(docSnap){
+      const d = docSnap.data();
+      const card = document.createElement('div'); card.className = 'post';
+      const header = document.createElement('header');
+      const av = document.createElement('img'); av.className='avatar'; av.src = d.userPhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.author||'User')}&background=0D1220&color=E8EEF7`;
+      const who = document.createElement('div'); who.innerHTML = `<div style="font-weight:700">${d.author||'User'}</div><div class='muted small'>${new Date(d.createdAt?.toDate?.()||Date.now()).toLocaleString()}</div>`;
+      header.append(av, who);
+      const media = document.createElement('div');
+      if(d.type==='image' && d.mediaURL){ const img = document.createElement('img'); img.className='media'; img.src = d.mediaURL; media.appendChild(img); }
+      if(d.type==='video' && d.mediaURL){ const v = document.createElement('video'); v.className='media'; v.src=d.mediaURL; v.controls=true; media.appendChild(v); }
+      const body = document.createElement('div'); body.className='body'; body.innerHTML = `<div>${d.text||''}</div><div style="margin-top:8px" class='row'><button class='btn' data-id='${docSnap.id}' data-act='like'>❤️ ${d.likes||0}</button><button class='btn' data-id='${docSnap.id}' data-act='comment'>💬 ${d.comments||0}</button></div>`;
+      card.append(header, media, body);
+      return card;
     }
 
-    onChildAdded(ref(db, "messages"), (snapshot) => {
-      const msg = snapshot.val();
-      const div = document.createElement("div");
-      div.textContent = msg.text;
-      chatMessages.appendChild(div);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+    async function loadFeed(){
+      if(postsUnsub) postsUnsub();
+      const q = query(collection(db,'posts'), orderBy('createdAt','desc'), limit(50));
+      postsUnsub = onSnapshot(q, (snap)=>{
+        postsArea.innerHTML='';
+        snap.forEach(docu=> postsArea.appendChild(renderPost(docu)));
+      });
+    }
+
+    async function loadStories(){
+      const q = query(collection(db,'stories'), orderBy('createdAt','desc'), limit(20));
+      onSnapshot(q,(snap)=>{
+        storiesBar.innerHTML='';
+        snap.forEach(s=>{
+          const d = s.data(); const div = document.createElement('div'); div.className='story'; div.innerHTML = `<img src='${d.photoURL||"https://via.placeholder.com/64"}' /><div class='small muted'>${d.name||'User'}</div>`; storiesBar.appendChild(div);
+        })
+      })
+    }
+
+    async function loadGroups(){
+      const q = query(collection(db,'groups'), orderBy('createdAt','desc'));
+      if(groupsUnsub) groupsUnsub();
+      groupsUnsub = onSnapshot(q,(snap)=>{
+        groupsList.innerHTML='';
+        snap.forEach(g=>{
+          const d = g.data(); const div = document.createElement('div'); div.className='small muted'; div.style.padding='6px 0'; div.innerHTML = `<strong>${d.name}</strong> <button class='btn' data-gid='${g.id}' style='margin-left:8px'>Open</button>`; groupsList.appendChild(div);
+        })
+      })
+    }
+
+    async function loadReels(){
+      const q = query(collection(db,'reels'), orderBy('createdAt','desc'), limit(20));
+      if(reelsUnsub) reelsUnsub();
+      reelsUnsub = onSnapshot(q,(snap)=>{
+        reelsList.innerHTML='';
+        snap.forEach(r=>{ const d=r.data(); const div=document.createElement('div'); div.innerHTML=`<video src='${d.videoURL}' controls style='width:100%;max-height:140px'></video>`; reelsList.appendChild(div); });
+      });
+    }
+
+    // ===== Publish post (upload to storage if file exists) =====
+    btnPublish.onclick = async ()=>{
+      const user = auth.currentUser; if(!user){ alert('Sign in first'); return; }
+      const txt = postText.value.trim();
+      const file = postFile.files[0];
+      let type = postType.value;
+      if(type==='auto'){ if(file){ type = file.type.startsWith('image') ? 'image' : 'video' } else { type = 'text' } }
+      let mediaURL = '';
+      if(file){
+        const ext = file.name.split('.').pop();
+        const storageRef = sRef(storage, `media/${user.uid}/${Date.now()}.${ext}`);
+        await uploadBytes(storageRef, file);
+        mediaURL = await getDownloadURL(storageRef);
+      }
+      await addDoc(collection(db,'posts'),{
+        uid:user.uid, author:user.displayName||user.email||'User', userPhoto:user.photoURL||'', type, text:txt, mediaURL, createdAt: serverTimestamp(), likes:0, comments:0
+      });
+      postText.value=''; postFile.value=''; showToast('Posted');
+    };
+
+    // ===== Groups create/open & group chat =====
+    btnCreateGroup.onclick = async ()=>{
+      const user = auth.currentUser; if(!user){ alert('Sign in first'); return }
+      const name = newGroupName.value.trim(); if(!name) return alert('Enter group name');
+      const ref = await addDoc(collection(db,'groups'), { name, owner: user.uid, members: [user.uid], createdAt: serverTimestamp() });
+      newGroupName.value=''; showToast('Group created');
+    };
+
+    // Open group chat handler (delegated)
+    groupsList.addEventListener('click', async (e)=>{
+      const btn = e.target.closest('button[data-gid]'); if(!btn) return; const gid = btn.dataset.gid;
+      openGroupChat(gid);
     });
 
-    window.sendMessage = sendMessage;
+    let activeGroupId=null, activeChatUnsub=null;
+    async function openGroupChat(gid){
+      activeGroupId = gid; chatMessages.innerHTML='';
+      if(activeChatUnsub) activeChatUnsub();
+      const q = query(collection(db,'groupMessages'), where('gid','==',gid), orderBy('createdAt','asc'));
+      activeChatUnsub = onSnapshot(q,(snap)=>{
+        chatMessages.innerHTML='';
+        snap.forEach(m=>{ const d=m.data(); const div = document.createElement('div'); div.className = 'message' + (d.uid===uid()?' me':''); div.textContent = `${d.name||'User'}: ${d.text}`; chatMessages.appendChild(div); }); chatMessages.scrollTop = chatMessages.scrollHeight;
+      });
+    }
+
+    btnSendChat.onclick = async ()=>{
+      const user = auth.currentUser; if(!user) return alert('Sign in first');
+      if(!activeGroupId) return alert('Open a group first');
+      const txt = chatInput.value.trim(); if(!txt) return;
+      await addDoc(collection(db,'groupMessages'), { gid: activeGroupId, uid:user.uid, name:user.displayName||user.email, text: txt, createdAt: serverTimestamp() });
+      chatInput.value='';
+    };
+
+    // ===== Upload Reels =====
+    btnUploadReel.onclick = async ()=>{
+      const user = auth.currentUser; if(!user) return alert('Sign in first');
+      const file = reelFile.files[0]; if(!file) return alert('Select video');
+      const ext = file.name.split('.').pop();
+      const ref = sRef(storage, `reels/${user.uid}/${Date.now()}.${ext}`);
+      await uploadBytes(ref, file);
+      const url = await getDownloadURL(ref);
+      await addDoc(collection(db,'reels'), { uid:user.uid, videoURL: url, createdAt: serverTimestamp(), author: user.displayName||user.email });
+      reelFile.value=''; showToast('Reel uploaded');
+    };
+
+    // ===== Real-time subscriptions when logged in =====
+    onAuthStateChanged(auth, async (user)=>{
+      const logged = !!user;
+      authControls.classList.toggle('hide', logged);
+      userMenu.classList.toggle('hide', !logged);
+      if(!logged){ sideName.textContent='Guest'; sideEmail.textContent='Not signed in'; userAvatar.src=''; userName.textContent=''; signedNotice.textContent='Not signed in';
+        // unsubscribe listeners
+        if(postsUnsub) postsUnsub(); if(groupsUnsub) groupsUnsub(); if(reelsUnsub) reelsUnsub(); if(activeChatUnsub) activeChatUnsub();
+        postsArea.innerHTML=''; storiesBar.innerHTML=''; groupsList.innerHTML=''; reelsList.innerHTML=''; chatMessages.innerHTML=''; return;
+      }
+      // user UI
+      userAvatar.src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName||user.email)}&background=0D1220&color=E8EEF7`;
+      userName.textContent = user.displayName || user.email;
+      sideAvatar.src = userAvatar.src; sideName.textContent = user.displayName || user.email; sideEmail.textContent = user.email || '';
+      signedNotice.textContent = `Signed in as ${user.displayName||user.email}`;
+
+      // ensure users collection has this user
+      const uRef = doc(db,'users',user.uid); const uSnap = await getDoc(uRef);
+      if(!uSnap.exists()){
+        await setDoc(uRef,{ uid:user.uid, name:user.displayName||user.email, email:user.email||'', photo:user.photoURL||'', createdAt: serverTimestamp() });
+      } else {
+        // update photo/name if missing
+        await updateDoc(uRef, { name: user.displayName||user.email, photo: user.photoURL||'' }).catch(()=>{});
+      }
+
+      // start live listeners
+      loadFeed(); loadStories(); loadGroups(); loadReels();
+    });
+
+    // ===== initial public feed load (non-auth partial) =====
+    loadFeed(); loadStories(); loadGroups(); loadReels();
+
+    // small delegated handlers (likes/comments)
+    postsArea.addEventListener('click', async (e)=>{
+      const btn = e.target.closest('button[data-act]'); if(!btn) return; const act = btn.dataset.act; const id = btn.dataset.id;
+      if(act==='like'){ const pRef = doc(db,'posts',id); const pSnap = await getDoc(pRef); if(!pSnap.exists()) return; const data = pSnap.data(); const has = (data.likeUids||[]).includes(uid()); if(!uid()) return alert('Sign in to like');
+          await updateDoc(pRef, { likes: data.likes+ (has?-1:1), likeUids: has? arrayRemove(uid()): arrayUnion(uid()) }); }
+      if(act==='comment'){ const txt = prompt('Comment'); if(!txt) return; await addDoc(collection(db,'posts',id,'comments'), { uid: uid(), text: txt, createdAt: serverTimestamp() }); const pRef = doc(db,'posts',id); await updateDoc(pRef, { comments: (pRef.comments||0)+1 }).catch(()=>{}); }
+    });
+
+    // Utility: quick auth helpers for password reset
+    window.quickReset = async ()=>{ const email = prompt('Enter your email for reset'); if(!email) return; try{ await sendPasswordResetEmail(auth,email); alert('Reset sent'); }catch(e){ alert(e.message); } };
+
+    // Navigation (basic)
+    document.getElementById('navHome').onclick = ()=>{ window.scrollTo({top:0,behavior:'smooth'}); };
+    document.getElementById('navReels').onclick = ()=>{ document.getElementById('reelsList').scrollIntoView({behavior:'smooth'}); };
+    document.getElementById('navMessages').onclick = ()=>{ document.getElementById('chatMessages').scrollIntoView({behavior:'smooth'}); };
+
+    // Done
+    console.log('Nova Social single-file app loaded');
   </script>
 </body>
 </html>
