@@ -174,18 +174,14 @@ import {
 
 // TODO: Replace the dots (...) with your real keys before deploying.
 const firebaseConfig = {
-  apiKey: "...",
+    apiKey: "AIzaSyBoco0HmEDwL8ffXt5UJgWJgDyz2KghcFU",
   authDomain: "swordex-login.firebaseapp.com",
+  databaseURL: "https://swordex-login-default-rtdb.firebaseio.com",
   projectId: "swordex-login",
-  storageBucket: "swordex-login.appspot.com",
-  messagingSenderId: "...",
-  appId: "..."
+  storageBucket: "swordex-login.firebasestorage.app",
+  messagingSenderId: "633212760179",
+  appId: "1:633212760179:web:ba64d2b8812ab5c134ba06"
 };
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
 
 // ---------- Simple Router ----------
 const routes = ["#/home","#/auth","#/feed","#/chat","#/groups","#/profile"];
