@@ -172,13 +172,19 @@ import {
 getStorage, ref, uploadBytes, getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 const firebaseConfig = {
-apiKey: "AIzaSyBoco0HmEDwL8ffXt5UJgWJgDyz2KghcFU",
-authDomain: "swordex-login.firebaseapp.com",
-databaseURL: "https://swordex-login-default-rtdb.firebaseio.com",
-projectId: "swordex-login",
-storageBucket: "swordex-login.appspot.com",
-messagingSenderId: "633212760179",
-appId: "1:633212760179:web:ba64d2b8812ab5c134ba06"
+  apiKey: "AIzaSyCMwEYe4psMaJ43CWislPuELslgKUPp6fc",
+  authDomain: "swordex-originals.firebaseapp.com",
+  databaseURL: "https://swordex-originals-default-rtdb.firebaseio.com",
+  projectId: "swordex-originals",
+  storageBucket: "swordex-originals.firebasestorage.app",
+  messagingSenderId: "137619203802",
+  appId: "1:137619203802:web:b256aaf7faebb774a867e3",
+  measurementId: "G-Q366QBPXPF"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 };
 
 
