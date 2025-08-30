@@ -159,29 +159,28 @@
 <script type="module">
 // ---------- Firebase Setup (CDN v10) ----------
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { 
-  getAuth, onAuthStateChanged, signInWithEmailAndPassword,
-  createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup,
-  signOut, updateProfile
+import {
+getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup,
+signOut, updateProfile, sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
-  getFirestore, collection, addDoc, doc, getDoc, getDocs, setDoc, updateDoc,
-  serverTimestamp, query, orderBy, where, onSnapshot, limit
+getFirestore, collection, addDoc, doc, getDoc, getDocs, setDoc, updateDoc,
+serverTimestamp, query, orderBy, where, onSnapshot, limit
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { 
-  getStorage, ref, uploadBytes, getDownloadURL 
+import {
+getStorage, ref, uploadBytes, getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
-
-// TODO: Replace the dots (...) with your real keys before deploying.
 const firebaseConfig = {
-  apiKey: "AIzaSyBoco0HmEDwL8ffXt5UJgWJgDyz2KghcFU",
-  authDomain: "swordex-login.firebaseapp.com",
-  databaseURL: "https://swordex-login-default-rtdb.firebaseio.com",
-  projectId: "swordex-login",
-  storageBucket: "swordex-login.firebasestorage.app",
-  messagingSenderId: "633212760179",
-  appId: "1:633212760179:web:ba64d2b8812ab5c134ba06"
+apiKey: "AIzaSyBoco0HmEDwL8ffXt5UJgWJgDyz2KghcFU",
+authDomain: "swordex-login.firebaseapp.com",
+databaseURL: "https://swordex-login-default-rtdb.firebaseio.com",
+projectId: "swordex-login",
+storageBucket: "swordex-login.appspot.com",
+messagingSenderId: "633212760179",
+appId: "1:633212760179:web:ba64d2b8812ab5c134ba06"
 };
+
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
