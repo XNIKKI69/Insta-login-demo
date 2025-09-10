@@ -5,170 +5,118 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SwordEX</title>
 <style>
-:root{
-  --bg:#0b0f14;
-  --card:#121823;
-  --muted:#9aa6b2;
-  --acc:#4f46e5;
-  --ok:#22c55e;
-  --danger:#ef4444
+:root {
+  --bg:#0b0f14; --card:#121823; --muted:#9aa6b2; --acc:#4f46e5; --ok:#22c55e; --danger:#ef4444;
 }
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:var(--bg);color:#e5e7eb}
-header{position:sticky;top:0;background:rgba(18,24,35,.9);backdrop-filter:blur(8px);z-index:10;border-bottom:1px solid #1f2937}
-.wrap{max-width:1000px;margin:0 auto;padding:12px}
-.brand{font-weight:800;letter-spacing:.5px}
-nav a{color:#c7d2fe;text-decoration:none;margin:0 8px;padding:6px 10px;border-radius:10px}
-nav a.active{background:rgba(79,70,229,.18)}
-.grid{display:grid;gap:16px}
-@media(min-width:900px){.grid-2{grid-template-columns:1.2fr .8fr}}
-.card{background:var(--card);border:1px solid #1f2937;border-radius:16px;padding:14px;box-shadow:0 8px 20px rgba(0,0,0,.25)}
-input,button,textarea,select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid #1f2937;background:#0f1520;color:#e5e7eb}
-button{cursor:pointer;background:var(--acc);border:none;font-weight:700}
-button.ghost{background:transparent;border:1px solid #334155}
-.row{display:flex;gap:10px;align-items:center}
-.row>button{flex:1}
-.muted{color:var(--muted);font-size:.9rem}
-.hide{display:none}
-.post{border-top:1px solid #1f2937;margin-top:10px;padding-top:10px}
-.post img, .post video{width:100%;border-radius:12px;border:1px solid #1f2937}
-.pill{display:inline-block;padding:2px 8px;border:1px solid #334155;border-radius:999px;font-size:.75rem;color:#cbd5e1}
-.avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;border:1px solid #334155;background:#111827}
-.msg{padding:8px 10px;border-radius:12px;max-width:78%;margin:6px 0}
-.msg.me{background:#1d283a;margin-left:auto}
-.msg.you{background:#0f1520;border:1px solid #1f2937}
-.list{max-height:60vh;overflow:auto}
-.danger{background:var(--danger)}
-.ok{background:var(--ok)}
-.center{display:flex;align-items:center;justify-content:center;min-height:50vh}
-.link{color:#93c5fd;cursor:pointer;text-decoration:underline}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family: system-ui, sans-serif; background: var(--bg); color:#e5e7eb; }
+header { position: sticky; top:0; background: rgba(18,24,35,.95); padding:12px; display:flex; justify-content:space-between; align-items:center; z-index:10; }
+header .brand { font-weight:800; font-size:1.2rem; }
+nav a { color:#c7d2fe; margin:0 8px; text-decoration:none; padding:6px 10px; border-radius:8px; }
+nav a.active { background: rgba(79,70,229,.2); }
+main { max-width:1000px; margin:12px auto; }
+.card { background: var(--card); border-radius:16px; padding:14px; margin-bottom:16px; }
+input,textarea,button{width:100%;padding:10px;border-radius:12px;border:1px solid #1f2937;background:#0f1520;color:#e5e7eb;margin-bottom:8px;}
+button{cursor:pointer;background:var(--acc);border:none;font-weight:700;}
+button.ghost{background:transparent;border:1px solid #334155;}
+.row{display:flex;gap:8px;}
+.row>button{flex:1;}
+.avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;border:1px solid #334155;}
+.muted{color:var(--muted);}
+.post img{width:100%;border-radius:12px;}
+.msg{padding:8px 10px;border-radius:12px;margin:4px 0;}
+.msg.me{background:#1d283a;margin-left:auto;}
+.msg.you{background:#0f1520;border:1px solid #1f2937;}
+.list{max-height:60vh;overflow:auto;}
 </style>
 </head>
 <body>
+
 <header>
-<div class="wrap row" style="justify-content:space-between">
-<div class="brand">SwordEX</div>
-<nav class="row" id="nav">
-<a data-route="#/feed">Feed</a>
-<a data-route="#/chat">DM</a>
-<a data-route="#/groups">Groups</a>
-<a data-route="#/profile">Profile</a>
-<a data-route="#/auth" id="authLink">Login</a>
-</nav>
-</div>
+  <div class="brand">SwordEX</div>
+  <nav>
+    <a href="#/feed" class="active">Feed</a>
+    <a href="#/chat">DM</a>
+    <a href="#/groups">Groups</a>
+    <a href="#/profile">Profile</a>
+    <a href="#/auth" id="authLink">Login</a>
+  </nav>
 </header>
 
-<main class="wrap">
-<section id="view-auth" class="card hide">
-<h2>Login / Signup</h2>
-<p class="muted">Use Email + Password. (Enable Google in Firebase if needed.)</p>
-<div class="grid">
-<input id="email" placeholder="Email"/>
-<input id="password" type="password" placeholder="Password"/>
-<div class="row">
-<button id="btnSignup">Signup</button>
-<button id="btnLogin" class="ghost">Login</button>
-</div>
-<button id="btnGoogle" class="ghost">Continue with Google</button>
-</div>
-</section>
+<main>
+  <!-- Auth -->
+  <section id="view-auth" class="card">
+    <h2>Login / Signup</h2>
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <div class="row">
+      <button id="btnSignup">Signup</button>
+      <button id="btnLogin" class="ghost">Login</button>
+    </div>
+    <button id="btnGoogle" class="ghost">Continue with Google</button>
+  </section>
 
-<section id="view-feed" class="grid grid-2 hide">
-<div class="card">
-<h2>Create Post</h2>
-<div class="grid">
-<input id="postCaption" placeholder="What's on your mind?"/>
-<input type="file" id="postMedia" accept="image/*,video/*"/>
-<button id="btnPost">Post</button>
-<p class="muted">Image or video optional. Newest posts first.</p>
-</div>
-</div>
-<div class="card">
-<h2>Feed</h2>
-<div id="feedList"></div>
-</div>
-</section>
+  <!-- Feed -->
+  <section id="view-feed" class="card hide">
+    <h2>Create Post</h2>
+    <input id="postCaption" placeholder="What's on your mind?">
+    <input type="file" id="postImage">
+    <button id="btnPost">Post</button>
+    <div id="feedList"></div>
+  </section>
 
-<section id="view-chat" class="grid grid-2 hide">
-<div class="card">
-<h2>Start Chat</h2>
-<input id="dmUserId" placeholder="Enter user UID"/>
-<button id="btnOpenDM">Open DM</button>
-</div>
-<div class="card">
-<h2 id="dmHead">Direct Messages</h2>
-<div id="dmList" class="list"></div>
-<div class="row">
-<input id="dmText" placeholder="Type message..."/>
-<button id="btnSendDM">Send</button>
-</div>
-</div>
-</section>
+  <!-- DM -->
+  <section id="view-chat" class="card hide">
+    <h2>Direct Messages</h2>
+    <input id="dmUserId" placeholder="Enter user UID">
+    <button id="btnOpenDM">Open DM</button>
+    <div id="dmList" class="list"></div>
+    <div class="row">
+      <input id="dmText" placeholder="Type message...">
+      <button id="btnSendDM">Send</button>
+    </div>
+  </section>
 
-<section id="view-groups" class="grid grid-2 hide">
-<div class="card">
-<h2>Create Group</h2>
-<input id="groupName" placeholder="Group name"/>
-<button id="btnCreateGroup">Create</button>
-<div class="post" id="myGroups"></div>
-</div>
-<div class="card">
-<h2 id="grpHead">Group Chat</h2>
-<div id="grpList" class="list"></div>
-<div class="row">
-<input id="grpText" placeholder="Type message..."/>
-<button id="btnSendGRP">Send</button>
-</div>
-</div>
-</section>
+  <!-- Groups -->
+  <section id="view-groups" class="card hide">
+    <h2>Create Group</h2>
+    <input id="groupName" placeholder="Group Name">
+    <button id="btnCreateGroup">Create</button>
+    <div id="myGroups"></div>
+    <div id="grpList" class="list"></div>
+    <div class="row">
+      <input id="grpText" placeholder="Type message...">
+      <button id="btnSendGRP">Send</button>
+    </div>
+  </section>
 
-<section id="view-profile" class="grid grid-2 hide">
-<div class="card">
-<h2>My Profile</h2>
-<div class="row">
-<img id="meAvatar" class="avatar" alt="avatar"/>
-<span class="pill" id="meUid"></span>
-</div>
-<input id="meName" placeholder="Username"/>
-<textarea id="meBio" rows="3" placeholder="Bio"></textarea>
-<input type="file" id="mePhoto" accept="image/*"/>
-<div class="row">
-<button id="btnSaveProfile">Save</button>
-<button id="btnLogout" class="ghost">Logout</button>
-</div>
-<p class="muted">Profile image uploads to Firebase Storage.</p>
-</div>
-<div class="card">
-<h2>Find User</h2>
-<input id="searchName" placeholder="Search username (exact)"/>
-<button id="btnSearchUser">Search</button>
-<div id="searchResult"></div>
-</div>
-</section>
-
-<section id="view-home" class="card">
-<div class="center">
-<div>
-<h1>Welcome to SwordEX</h1>
-<p class="muted">Login to start posting, chatting and creating groups.</p>
-<p class="muted">Built with Firebase + pure JS (no build step). Ready for GitHub Pages.</p>
-</div>
-</div>
-</section>
+  <!-- Profile -->
+  <section id="view-profile" class="card hide">
+    <h2>Profile</h2>
+    <img id="meAvatar" class="avatar">
+    <input id="meName" placeholder="Username">
+    <textarea id="meBio" placeholder="Bio"></textarea>
+    <input type="file" id="mePhoto">
+    <div class="row">
+      <button id="btnSaveProfile">Save</button>
+      <button id="btnLogout" class="ghost">Logout</button>
+    </div>
+  </section>
 </main>
 
 <script type="module">
+// Firebase CDN imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, doc, getDoc, setDoc, updateDoc, serverTimestamp, query, orderBy, where, onSnapshot, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, doc, getDoc, getDocs, setDoc, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-// ====== Firebase Config ======
+// Firebase config
 const firebaseConfig = {
   apiKey: "...",
-  authDomain: "...",
-  projectId: "...",
-  storageBucket: "...",
+  authDomain: "swordex-login.firebaseapp.com",
+  projectId: "swordex-login",
+  storageBucket: "swordex-login.appspot.com",
   messagingSenderId: "...",
   appId: "..."
 };
@@ -178,129 +126,22 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// ====== Router ======
-const routes = ["#/home","#/auth","#/feed","#/chat","#/groups","#/profile"];
-function show(route){
-  document.querySelectorAll('main section').forEach(s=>s.classList.add('hide'));
-  const id = route.replace('#/','');
-  document.getElementById('view-'+id)?.classList.remove('hide');
-  document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('active', a.dataset.route===route));
-}
-window.addEventListener('hashchange', ()=> show(location.hash || "#/home"));
-if(!location.hash) location.hash="#/home"; else show(location.hash);
+// Router
+const views = { feed:"#view-feed", chat:"#view-chat", groups:"#view-groups", profile:"#view-profile", auth:"#view-auth" };
+function showView(v){ Object.values(views).forEach(id=>document.querySelector(id).classList.add('hide')); document.querySelector(views[v]).classList.remove('hide'); }
+window.addEventListener('hashchange',()=>showView(location.hash.replace('#/','')));
+if(!location.hash) location.hash="#/auth"; else showView(location.hash.replace('#/',''));
 
-// ====== DOM Elements ======
-const $ = sel => document.querySelector(sel);
-const feedList = $("#feedList");
-const dmList = $("#dmList");
-const grpList = $("#grpList");
-const myGroups = $("#myGroups");
-const authLink = $("#authLink");
-
-// ====== Helpers ======
-const safe = s => (s||"").replace(/[<>&]/g, c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]));
-
-// ====== Auth ======
-$("#btnSignup").onclick = async () => { const email = $("#email").value.trim(); const password = $("#password").value.trim(); if(!email||!password) return alert("Enter email & password"); await createUserWithEmailAndPassword(auth,email,password);}
-$("#btnLogin").onclick = async () => { const email = $("#email").value.trim(); const password = $("#password").value.trim(); if(!email||!password) return alert("Enter email & password"); await signInWithEmailAndPassword(auth,email,password);}
-$("#btnGoogle").onclick = async () => { const provider = new GoogleAuthProvider(); await signInWithPopup(auth,provider);}
+// Auth
+$("#btnSignup").onclick = async()=>{ await createUserWithEmailAndPassword(auth, $("#email").value, $("#password").value); }
+$("#btnLogin").onclick = async()=>{ await signInWithEmailAndPassword(auth, $("#email").value, $("#password").value); }
+$("#btnGoogle").onclick = async()=>{ const provider = new GoogleAuthProvider(); await signInWithPopup(auth, provider); }
 $("#btnLogout").onclick = ()=>signOut(auth);
 
-onAuthStateChanged(auth, async (user)=>{
-  if(user){
-    authLink.textContent="Logout";
-    authLink.onclick=()=>signOut(auth);
-    $("#meUid").textContent=user.uid;
-    $("#meAvatar").src=user.photoURL||"";
-    await ensureUserDoc(user);
-    subscribeFeed();
-    subscribeMyGroups(user.uid);
-  }else{
-    authLink.textContent="Login";
-    authLink.onclick=()=>location.hash="#/auth";
-    feedList.innerHTML="";
-    dmList.innerHTML="";
-    grpList.innerHTML="";
-    myGroups.innerHTML="";
-  }
-});
+// Utility
+function $(sel){ return document.querySelector(sel); }
 
-// ====== User Profile ======
-async function ensureUserDoc(user){
-  const uref = doc(db,"users",user.uid);
-  const snap = await getDoc(uref);
-  if(!snap.exists()){
-    await setDoc(uref,{uid:user.uid,name:user.displayName||"User",bio:"",photoURL:user.photoURL||"",createdAt:serverTimestamp()});
-  }
-  const data = (await getDoc(uref)).data();
-  $("#meName").value=data.name||"";
-  $("#meBio").value=data.bio||"";
-  $("#meAvatar").src=data.photoURL||"";
-}
-
-$("#btnSaveProfile").onclick = async ()=>{
-  const user=auth.currentUser; if(!user)return alert("Login first");
-  const name=$("#meName").value.trim(); const bio=$("#meBio").value.trim();
-  let photoURL=user.photoURL||"";
-  const file=$("#mePhoto").files[0];
-  if(file){ const r=ref(storage, `avatars/${user.uid}`); await uploadBytes(r,file); photoURL=await getDownloadURL(r); await updateProfile(user,{photoURL}); $("#meAvatar").src=photoURL;}
-  await setDoc(doc(db,"users",user.uid),{name,bio,photoURL,uid:user.uid},{merge:true});
-  alert("Profile saved");
-};
-
-$("#btnSearchUser").onclick = async ()=>{
-  const name=$("#searchName").value.trim(); if(!name)return;
-  const q=query(collection(db,"users"),where("name","==",name),limit(10));
-  const docs=await getDocs(q);
-  let html="";
-  docs.forEach(d=>{
-    const u=d.data();
-    html+=`<div class="post"><div class="row"><img class="avatar" src="${u.photoURL||""}"/><div><div><strong>${safe(u.name)}</strong></div><div class="muted">${u.uid}</div></div></div><div class="row" style="margin-top:8px"><button data-uid="${u.uid}" class="goDM">Open DM</button><button data-uid="${u.uid}" class="copyUID ghost">Copy UID</button></div></div>`;
-  });
-  $("#searchResult").innerHTML = html||"<p class='muted'>No user found</p>";
-  $("#searchResult").querySelectorAll(".goDM").forEach(b=>b.onclick=()=>openDM(b.dataset.uid));
-  $("#searchResult").querySelectorAll(".copyUID").forEach(b=>b.onclick=()=>navigator.clipboard.writeText(b.dataset.uid));
-};
-
-// ====== Feed / Posts ======
-async function createPost(){
-  const user=auth.currentUser; if(!user)return alert("Login first");
-  const caption=$("#postCaption").value.trim(); const file=$("#postMedia").files[0];
-  let mediaURL=""; let isVideo=false;
-  if(file){
-    const r=ref(storage, `posts/${user.uid}/${Date.now()}_${file.name}`);
-    await uploadBytes(r,file);
-    mediaURL=await getDownloadURL(r);
-    isVideo=file.type.startsWith("video/");
-  }
-  await addDoc(collection(db,"posts"),{uid:user.uid,caption,mediaURL,isVideo,createdAt:serverTimestamp(),likes:[]});
-  $("#postCaption").value=""; $("#postMedia").value="";
-}
-$("#btnPost").onclick=createPost;
-
-let unsubFeed=null;
-function subscribeFeed(){
-  if(unsubFeed) unsubFeed();
-  const qy=query(collection(db,"posts"),orderBy("createdAt","desc"));
-  unsubFeed=onSnapshot(qy,async snap=>{
-    const me=auth.currentUser; let html="";
-    for(const d of snap.docs){
-      const p=d.data(); const id=d.id;
-      const u=(await getDoc(doc(db,"users",p.uid))).data()||{name:"User",photoURL:""};
-      const liked=(p.likes||[]).includes(me?.uid);
-      html+=`<div class="post"><div class="row"><img class="avatar" src="${u.photoURL||""}"/><div><div><strong>${safe(u.name)}</strong></div><div class="muted">${p.createdAt?.toDate?p.createdAt.toDate().toLocaleString():"Just now"}</div></div></div>${p.mediaURL? p.isVideo? `<video controls src="${p.mediaURL}"></video>`:`<img src="${p.mediaURL}"/>`:""}<p>${safe(p.caption||"")}</p><div class="row"><button class="${liked?'ghost':''}" data-like="${id}">❤ ${p.likes? p.likes.length:0}</button><button class="ghost" data-cmt="${id}">Comment</button></div><div id="cmt-${id}"></div></div>`;
-    }
-    feedList.innerHTML = html||"<p class='muted'>No posts yet</p>";
-    feedList.querySelectorAll("[data-like]").forEach(btn=>btn.onclick=()=>toggleLike(btn.dataset.like));
-    feedList.querySelectorAll("[data-cmt]").forEach(btn=>btn.onclick=()=>openComments(btn.dataset.cmt));
-  });
-}
-
-// Likes / Comments functions (same as previous code)...
-// DM, Groups functions (same as previous code)...
-
-// ====== Nav Clicks ======
-document.querySelectorAll('nav a[data-route]').forEach(a=>a.onclick=e=>{e.preventDefault();location.hash=a.dataset.route;});
 </script>
+
 </body>
 </html>
